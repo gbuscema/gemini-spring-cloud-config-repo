@@ -2,6 +2,8 @@ msg: "Git - DEV Environment - Hello from config server."
 service:
   name: gemini-pms-bff
   version: 1.0.1-DEV
+  uprise:
+    endpoint: ""
 logstash:
   host: localhost
   port: '5044'
