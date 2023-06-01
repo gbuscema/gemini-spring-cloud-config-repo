@@ -2,6 +2,8 @@ msg: "Git - MOCK Environment - Hello from config server."
 service:
   name: gemini-pms-bff
   version: 1.0.1-DEV
+  uprise:
+    endpoint: "https://34398edb-e557-46c7-a3a8-71103139ab47.mock.pstmn.io/PatientOutreachWebApi"
 logstash:
   host: localhost
   port: '5044'
