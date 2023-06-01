@@ -1,0 +1,92 @@
+msg: "Git - MOCK Environment - Hello from config server."
+service:
+  name: gemini-pms-bff
+  version: 1.0.1-DEV
+logstash:
+  host: localhost
+  port: '5044'
+server:
+  port: '8083'
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - prometheus
+app:
+  token-exchange-client-id: spring_keycloak_demo_client_2
+  token-endpoint: "http://localhost:8080/auth/realms/demo/protocol/openid-connect/token"
+  client-secret: 9ee1dcb4-4983-4ee5-b8a2-ae384f6fc4e4
+  client-secret-2: 9ee1dcb4-4983-4ee5-b8a2-ae384f6fc4e4
+  client-id: spring_keycloak_demo_client
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          client-id:
+            client-id: spring_keycloak_demo_client_3
+            client-secret: 9ee1dcb4-4983-4ee5-b8a2-ae384f6fc4e3
+            authorization-grant-type: client_credentials
+        provider:
+          client-id:
+            issuer-uri: http://localhost:8080/auth/realms/demo
+            token-uri: http://localhost:8080/auth/realms/demo/protocol/openid-connect/token
+
+# Resilience4J configuration
+resilience4j:
+  circuitbreaker:
+    instances:
+      circuitBreakerPatient:
+        sliding-window-size: '10'
+        minimum-number-of-calls: '5'
+        permitted-number-of-calls-in-half-open-state: '3'
+        failure-rate-threshold: '50'
+        wait-duration-in-open-state: 5s
+        sliding-window-type: count_based
+        automatic-transition-from-open-to-half-open-enabled: 'true'
+  retry:
+    metrics:
+      legacy:
+        enabled: 'true'
+      enabled: 'true'
+    instances:
+      retry-patient:
+        maxRetryAttempts: 3
+        waitDuration: 1s
+      retry-appointment:
+        maxRetryAttempts: 3
+        waitDuration: 1s
+      retry-appointment-status:
+        maxRetryAttempts: 3
+        waitDuration: 1s
+      retry-appointment-type:
+        maxRetryAttempts: 3
+        waitDuration: 1s
+  timelimiter:
+    metrics:
+      enabled: 'true'
+    instances:
+      timeLimiterPatient:
+        timeout-duration: 2s
+        cancel-running-future: 'true'
+  bulkhead:
+    metrics:
+      enabled: 'true'
+    instances:
+      bulkheadPatient:
+        max-wait-duration: '1'
+        max-concurrent-calls: '3'
+  ratelimiter:
+    instances:
+      rateLimiterPatient:
+        timeout-duration: 0s
+        event-consumer-buffer-size: '50'
+        register-health-indicator: 'true'
+        limit-for-period: '5'
+        subscribe-for-events: 'true'
+        limit-refresh-period: 60s
+        allow-health-indicator-to-fail: 'true'
+    metrics:
+      enabled: 'true'
+
